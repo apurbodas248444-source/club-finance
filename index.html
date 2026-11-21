@@ -68,7 +68,7 @@
 <script>
   const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_2bF3Yo0_qOSasAf8GpgBiA_rE2AxmAv'; // Replace with your实际 key
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentUser = null;
 
@@ -76,7 +76,7 @@
     const memberId = document.getElementById('memberIdInput').value;
     const pin = document.getElementById('pinInput').value;
 
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from('members')
       .select('*')
       .eq('id', memberId)
@@ -103,7 +103,7 @@
     if (!currentUser) return;
 
     // Fetch monthly fees for this member
-    const { data: fees, error } = await supabase
+    const { data: fees, error } = await db
       .from('monthly_fees')
       .select('*')
       .eq('member_id', currentUser.id);
