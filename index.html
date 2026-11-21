@@ -181,7 +181,7 @@
                 <td>${t.category}</td>
                 <td><span class="${t.type.toLowerCase()}">${t.type === 'Income' ? 'আয়' : 'খরচ'}</span></td>
                 <td>${formatBDT(t.amount)}</td>
-                <td><button onclick="deleteTransaction('${t.id}')">Delete</button></td>
+                ${currentRole === 'admin' ? <td><button onclick="deleteTransaction('${t.id}')">Delete</button></td> : '<td></td>'}
             </tr>`;
             tbody.innerHTML += row;
         });
