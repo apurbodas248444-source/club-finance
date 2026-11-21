@@ -71,7 +71,7 @@
 
     <table>
         <thead>
-            <tr><th>তারিখ</th><th>শিরোনাম</th><th>ক্যাটাগরি</th><th>ধরন</th><th>পরিমাণ</th></tr>
+            <tr><th>তারিখ</th><th>শিরোনাম</th><th>ক্যাটাগরি</th><th>ধরন</th><th>পরিমাণ</th><th>Action</th></tr>
         </thead>
         <tbody id="tx-list"></tbody>
     </table>
@@ -181,6 +181,7 @@
                 <td>${t.category}</td>
                 <td><span class="${t.type.toLowerCase()}">${t.type === 'Income' ? 'আয়' : 'খরচ'}</span></td>
                 <td>${formatBDT(t.amount)}</td>
+                <td><button onclick="deleteTransaction('${t.id}')">Delete</button></td>
             </tr>`;
             tbody.innerHTML += row;
         });
@@ -225,7 +226,22 @@
         a.href = url;
         a.download = 'finance_report.csv';
         a.click();
+    }async function deleteTransaction(id) {
+    if (!confirm('আপনি কি এই এন্ট্রিটি ডিলিট করতে চান?')) return;
+
+    const { error } = await db
+        .from('transactions')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        alert('ডিলিট করতে সমস্যা হয়েছে: ' + error.message);
+    } else if (typeof fetchTransactions === 'function') {
+        fetchTransactions();
+    } else {
+        location.reload();
     }
+}
 </script>
 
 </body>
