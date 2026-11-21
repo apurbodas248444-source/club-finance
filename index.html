@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Business Club Finance Hub</title>
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
@@ -81,6 +80,7 @@
 <script>
     const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_2BF3yO_q05aAF8GgpB1A_RE2AxmAv';
+    const MEMBER_PIN = '5678';
     const TREASURER_PIN = '1234';
 
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -89,20 +89,20 @@
     let currentFilter = 'all';
     let transactions = [];
 
-    // পেজ লোড হওয়ার সাথে সাথে পিন চাওয়া হবে
     window.onload = function() {
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
         checkAccess();
     };
 
     function checkAccess() {
-        const enteredPin = prompt("প্লিজ ক্লাব মেম্বার পিন দিন (1234):");
+        const enteredPin = prompt("প্লিজ পিন দিন (মেম্বার: 5678, ট্রেজারার: 1234):");
         if (enteredPin === TREASURER_PIN) {
             currentRole = 'admin';
             document.getElementById('adminForm').style.display = 'block';
             document.getElementById('memberViewBtn').style.display = 'inline-block';
-        } else if (enteredPin !== null && enteredPin.trim() !== "") {
-            alert("ভুল পিন! শুধুমাত্র মেম্বার ভিউ দেখা যাবে।");
+        } else if (enteredPin === MEMBER_PIN) {
+            currentRole = 'member';
+            alert("সফলভাবে মেম্বার ভিউতে প্রবেশ করেছেন।");
         } else {
             document.body.innerHTML = "<h1>অ্যাক্সেস সংরক্ষিত। সঠিক পিন ছাড়া এই পেজ দেখা নিষেধ।</h1>";
             return;
@@ -124,7 +124,7 @@
             document.getElementById('adminForm').style.display = 'block';
             document.getElementById('memberViewBtn').style.display = 'inline-block';
         } else {
-            alert("ভুল পিন!");
+            alert("ভুল ট্রেজারার পিন!");
         }
     }
 
@@ -187,6 +187,10 @@
     }
 
     async function saveTransaction() {
+        if (currentRole !== 'admin') {
+            alert("দুঃখিত, শুধুমাত্র ট্রেজারার হিসাব যোগ করতে পারবেন!");
+            return;
+        }
         const type = document.getElementById('type').value;
         const title = document.getElementById('title').value;
         const category = document.getElementById('category').value;
