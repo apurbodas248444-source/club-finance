@@ -1,446 +1,146 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Business Club Finance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 20px;
-      color: #1f2937;
-    }
-    .container {
-      max-width: 960px;
-      margin: auto;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-    }
-    .header {
-      background: #0b3da6;
-      color: #ffffff;
-      padding: 18px 20px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-    .role-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .role-badge {
-      background: rgba(255, 255, 255, 0.16);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .role-btn {
-      border: none;
-      background: #ffffff;
-      color: #0b3da6;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .card {
-      background: #e8edf7;
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-      color: #374151;
-    }
-    .card p {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: #0b3da6;
-    }
-    .form-section {
-      margin-top: 22px;
-      padding: 16px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      background: #fafafa;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-    input, select {
-      padding: 9px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 14px;
-      width: 100%;
-    }
-    .btn-primary {
-      background: #0b3da6;
-      color: #ffffff;
-      border: none;
-      padding: 9px 14px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-csv {
-      background: #16a34a;
-      color: #ffffff;
-      border: none;
-      padding: 9px 14px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 22px;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      border: 1px solid #cbd5e1;
-      background: #f1f5f9;
-      color: #1f2937;
-      padding: 7px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .filter-btn.active {
-      background: #0b3da6;
-      color: #ffffff;
-      border-color: #0b3da6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 14px;
-    }
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      font-size: 14px;
-    }
-    th {
-      background: #f8fafc;
-      font-weight: 700;
-    }
-    .status-income {
-      color: #15803d;
-      font-weight: 600;
-    }
-    .status-expense {
-      color: #b91c1c;
-      font-weight: 600;
-    }
-    .delete-btn {
-      background: #dc2626;
-      color: #ffffff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    @media (max-width: 680px) {
-      .metrics { grid-template-columns: 1fr; }
-    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #1f2937; }
+    .container { max-width: 800px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 20px; }
+    .btn { background: #0b3da6; color: #ffffff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+    .card { background: #e8edf7; padding: 16px; border-radius: 8px; text-align: center; }
+    .card h3 { margin: 0 0 8px; font-size: 14px; color: #374151; }
+    .card p { margin: 0; font-size: 22px; font-weight: 700; color: #0b3da6; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    th { background-color: #f9fafb; }
+    .login-modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+    .login-box { background: white; padding: 30px; border-radius: 8px; width: 300px; text-align: center; }
+    .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Business Club Finance Hub</h1>
-      <div class="role-box">
-        <span id="roleDisplay" class="role-badge">Member / Viewer</span>
-        <button type="button" class="role-btn" onclick="switchRole()">রোল পরিবর্তন</button>
-      </div>
-    </div>
 
-    <div class="metrics">
-      <div class="card">
-        <h3>বর্তমান ব্যালেন্স (Current Balance)</h3>
-        <p id="currentBalance">৳0</p>
-      </div>
-      <div class="card">
-        <h3>মোট আয় (Total Income)</h3>
-        <p id="totalIncome">৳0</p>
-      </div>
-      <div class="card">
-        <h3>মোট খরচ (Total Expense)</h3>
-        <p id="totalExpense">৳0</p>
-      </div>
-    </div>
+<div id="loginModal" class="login-modal">
+  <div class="login-box">
+    <h2>সদস্য লগইন</h2>
+    <input type="text" id="memberIdInput" placeholder="মেম্বার আইডি">
+    <input type="password" id="pinInput" placeholder="গোপন পিন">
+    <button class="btn" onclick="handleLogin()">লগইন</button>
+    <p style="margin-top: 15px; font-size: 12px; color: #6b7280;">অ্যাডমিন হিসেবে দেখতে ডিফল্ট ভিউ ব্যবহার করুন</p>
+  </div>
+</div>
 
-    <div id="adminFormSection" class="form-section" style="display: none;">
-      <strong>নতুন লেনদেন যোগ করুন (শুধুমাত্র অ্যাডমিন)</strong>
-      <div class="form-grid">
-        <input type="date" id="txDate" />
-        <input type="text" id="txTitle" placeholder="শিরোনাম" />
-        <input type="text" id="txCategory" placeholder="ক্যাটাগরি" />
-        <select id="txType">
-          <option value="income">আয় (Income)</option>
-          <option value="expense">খরচ (Expense)</option>
-        </select>
-        <input type="number" id="txAmount" placeholder="পরিমাণ (৳)" min="0" step="any" />
-        <button type="button" class="btn-primary" onclick="saveTransaction()">সেভ করুন</button>
-      </div>
+<div class="container">
+  <header>
+    <h1>Business Club Finance Hub</h1>
+    <div>
+      <span id="userGreeting">স্বাগতম!</span>
+      <button class="btn" onclick="logout()">লগআউট</button>
     </div>
+  </header>
 
-    <div class="toolbar">
-      <div class="filters">
-        <button type="button" id="btn-all" class="filter-btn active" onclick="setFilter('all')">সব (All)</button>
-        <button type="button" id="btn-income" class="filter-btn" onclick="setFilter('income')">আয় (Income)</button>
-        <button type="button" id="btn-expense" class="filter-btn" onclick="setFilter('expense')">খরচ (Expense)</button>
-      </div>
-      <button type="button" class="btn-csv" onclick="exportCSV()">CSV ডাউনলোড</button>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>তারিখ</th>
-          <th>শিরোনাম</th>
-          <th>ক্যাটাগরি</th>
-          <th>ধরন</th>
-          <th>পরিমাণ</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="txTableBody"></tbody>
-    </table>
+  <div class="metrics">
+    <div class="card"><h3>মোট জমা</h3><p id="totalPaid">৳0</p></div>
+    <div class="card"><h3>মোট বকেয়া</h3><p id="totalDue">৳0</p></div>
+    <div class="card"><h3>স্ট্যাটাস</h3><p id="memberStatus">-</p></div>
   </div>
 
-  <script>
-    const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_2bF3Yo0_qOSasAf8GpgBiA_rE2AxmAv';
-    const ADMIN_PIN = '420'; // প্রয়োজনে নিজের অ্যাডমিন পিন দিন
+  <h2>আপনার মাসিক ফি এর হিসাব</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>মাস</th>
+        <th>বছর</th>
+        <th>জমা (টাকা)</th>
+        <th>স্ট্যাটাস</th>
+      </tr>
+    </thead>
+    <tbody id="feesTableBody">
+      <!-- Data will be populated here -->
+    </tbody>
+  </table>
+</div>
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+  const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_2bF3Yo0_qOSasAf8GpgBiA_rE2AxmAv'; // Replace with your实际 key
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let currentRole = 'member';
-    let currentFilter = 'all';
-    let transactions = [];
+  let currentUser = null;
 
-    function formatBDT(amount) {
-      const num = Number(amount) || 0;
-      return '৳' + num.toLocaleString('en-BD');
+  async function handleLogin() {
+    const memberId = document.getElementById('memberIdInput').value;
+    const pin = document.getElementById('pinInput').value;
+
+    const { data, error } = await supabase
+      .from('members')
+      .select('*')
+      .eq('id', memberId)
+      .eq('pin', pin)
+      .single();
+
+    if (error || !data) {
+      alert('সঠিক মেম্বার আইডি এবং পিন দিন');
+      return;
     }
 
-    function updateRoleUI() {
-      const badge = document.getElementById('roleDisplay');
-      const formSection = document.getElementById('adminFormSection');
+    currentUser = data;
+    document.getElementById('userGreeting').innerText = `স্বাগতম, ${currentUser.name}!`;
+    document.getElementById('loginModal').style.display = 'none';
+    loadMemberData();
+  }
 
-      if (currentRole === 'admin') {
-        badge.textContent = 'Treasurer / Admin';
-        formSection.style.display = 'block';
-      } else {
-        badge.textContent = 'Member / Viewer';
-        formSection.style.display = 'none';
-      }
-      renderList();
+  function logout() {
+    currentUser = null;
+    document.getElementById('loginModal').style.display = 'flex';
+  }
+
+  async function loadMemberData() {
+    if (!currentUser) return;
+
+    // Fetch monthly fees for this member
+    const { data: fees, error } = await supabase
+      .from('monthly_fees')
+      .select('*')
+      .eq('member_id', currentUser.id);
+
+    if (error) {
+      console.error('Error fetching fees:', error);
+      return;
     }
 
-    function switchRole() {
-      if (currentRole === 'admin') {
-        currentRole = 'member';
-        updateRoleUI();
-        return;
-      }
+    const tbody = document.getElementById('feesTableBody');
+    tbody.innerHTML = '';
 
-      const pin = prompt('অ্যাডমিন পিন লিখুন:');
-      if (pin === ADMIN_PIN) {
-        currentRole = 'admin';
-        updateRoleUI();
-      } else if (pin !== null) {
-        alert('ভুল পিন! মেম্বার মোড বহাল থাকছে।');
-      }
-    }
+    let totalPaid = 0;
+    // Assuming monthly fee is fixed at 100 BDT for calculation
+    const expectedMonthlyFee = 100; 
 
-    function setFilter(filterType) {
-      currentFilter = filterType;
-      document.querySelectorAll('.filter-btn').forEach((btn) => btn.classList.remove('active'));
-      const activeBtn = document.getElementById('btn-' + filterType);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderList();
-    }
-
-    function updateSummary() {
-      let income = 0;
-      let expense = 0;
-
-      transactions.forEach((t) => {
-        const amt = Number(t.amount) || 0;
-        if ((t.type || '').toLowerCase() === 'income') {
-          income += amt;
-        } else {
-          expense += amt;
-        }
-      });
-
-      const balance = income - expense;
-      document.getElementById('currentBalance').textContent = formatBDT(balance);
-      document.getElementById('totalIncome').textContent = formatBDT(income);
-      document.getElementById('totalExpense').textContent = formatBDT(expense);
-    }
-
-    function renderList() {
-      const tbody = document.getElementById('txTableBody');
-      tbody.innerHTML = '';
-
-      const filtered = transactions.filter((t) => {
-        if (currentFilter === 'all') return true;
-        return (t.type || '').toLowerCase() === currentFilter;
-      });
-
-      filtered.forEach((t) => {
-        const typeLower = (t.type || '').toLowerCase();
-        const typeLabel = typeLower === 'income' ? 'আয়' : 'খরচ';
-        const deleteCell =
-          currentRole === 'admin'
-            ? `<td><button type="button" class="delete-btn" onclick="deleteTransaction('${t.id}')">Delete</button></td>`
-            : '<td></td>';
-
-        const row = `
-          <tr>
-            <td>${t.date || ''}</td>
-            <td>${t.title || ''}</td>
-            <td>${t.category || ''}</td>
-            <td><span class="status-${typeLower}">${typeLabel}</span></td>
-            <td>${formatBDT(t.amount)}</td>
-            ${deleteCell}
-          </tr>
-        `;
-        tbody.innerHTML += row;
-      });
-    }
-
-    async function fetchTransactions() {
-      const { data, error } = await db
-        .from('transactions')
-        .select('*')
-        .order('date', { ascending: false });
-
-      if (error) {
-        console.error('ডাটা লোড করতে সমস্যা:', error.message);
-        return;
-      }
-
-      transactions = data || [];
-      updateSummary();
-      renderList();
-    }
-
-    async function saveTransaction() {
-      if (currentRole !== 'admin') {
-        alert('দুঃখিত, শুধুমাত্র অ্যাডমিন এন্ট্রি যোগ করতে পারবেন।');
-        return;
-      }
-
-      const date = document.getElementById('txDate').value;
-      const title = document.getElementById('txTitle').value.trim();
-      const category = document.getElementById('txCategory').value.trim();
-      const type = document.getElementById('txType').value;
-      const amount = Number(document.getElementById('txAmount').value);
-
-      if (!date || !title || !amount) {
-        alert('তারিখ, শিরোনাম এবং পরিমাণ সঠিকভাবে পূরণ করুন।');
-        return;
-      }
-
-      const { error } = await db.from('transactions').insert([{ date, title, category, type, amount }]);
-
-      if (error) {
-        alert('সেভ করতে সমস্যা হয়েছে: ' + error.message);
-      } else {
-        document.getElementById('txTitle').value = '';
-        document.getElementById('txCategory').value = '';
-        document.getElementById('txAmount').value = '';
-        fetchTransactions();
-      }
-    }
-
-    async function deleteTransaction(id) {
-      if (currentRole !== 'admin') {
-        alert('দুঃখিত, শুধুমাত্র অ্যাডমিন ডিলিট করতে পারবেন।');
-        return;
-      }
-
-      if (!confirm('আপনি কি এই এন্ট্রিটি ডিলিট করতে চান?')) {
-        return;
-      }
-
-      const { error } = await db
-        .from('transactions')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        alert('ডিলিট করতে সমস্যা হয়েছে: ' + error.message);
-      } else if (typeof fetchTransactions === 'function') {
-        fetchTransactions();
-      } else {
-        location.reload();
-      }
-    }
-
-    function exportCSV() {
-      let csv = 'তারিখ,শিরোনাম,ক্যাটাগরি,ধরন,পরিমাণ\n';
-      transactions.forEach((t) => {
-        csv += `${t.date || ''},${t.title || ''},${t.category || ''},${t.type || ''},${t.amount || 0}\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'finance_report.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('txDate').valueAsDate = new Date();
-      updateRoleUI();
-      fetchTransactions();
+    fees.forEach(fee => {
+      totalPaid += Number(fee.amount);
+      const status = fee.amount >= expectedMonthlyFee ? 'পরিশোধিত' : 'বকেয়া';
+      
+      tbody.innerHTML += `
+        <tr>
+          <td>${fee.month}</td>
+          <td>${fee.year}</td>
+          <td>৳${fee.amount}</td>
+          <td>${status}</td>
+        </tr>
+      `;
     });
-  </script>
+
+    document.getElementById('totalPaid').innerText = `৳${totalPaid}`;
+    // Calculate rough due based on number of records vs months
+    const totalDue = Math.max(0, (fees.length * expectedMonthlyFee) - totalPaid);
+    document.getElementById('totalDue').innerText = `৳${totalDue}`;
+    document.getElementById('memberStatus').innerText = totalDue === 0 ? 'আপ-টু-ডেট' : 'বকেয়া আছে';
+  }
+</script>
+
 </body>
 </html>
