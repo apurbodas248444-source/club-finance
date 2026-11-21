@@ -1,0 +1,9 @@
+{
+  "name": "Business Club Finance Hub",
+  "short_name": "Club Finance",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary"
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <title>Business Club Finance Hub</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-alt: #eef3f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 48px;
+    }
+
+    .container { max-width: 1040px; margin: 0 auto; padding: 20px 16px; }
+
+    .topbar {
+      background: linear-gradient(135deg, var(--primary), #172554);
+      color: #fff;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .brand h1 { font-size: 1.35rem; font-weight: 700; }
+    .brand p { font-size: 0.85rem; opacity: 0.88; margin-top: 2px; }
+
+    .role-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 6px;
+      border-radius: 10px;
+    }
+
+    .role-btn {
+      border: none;
+      background: transparent;
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .role-btn.active { background: #ffffff; color: var(--primary); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+    .stat-value { font-size: 1.55rem; font-weight: 700; }
+    .val-balance { color: var(--primary); }
+    .val-income { color: var(--success); }
+    .val-expense { color: var(--danger); }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 820px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-group { margin-bottom: 13px; }
+    label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .member-notice {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+    }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+    .filter-chip {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .tx-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .tx-item {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fafcff;
+    }
+
+    .tx-meta h4 { font-size: 0.95rem; font-weight: 600; }
+    .tx-meta p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    .badge-income { background: var(--success-bg); color: var(--success); }
+    .badge-expense { background: var(--danger-bg); color: var(--danger); }
+
+    .tx-right { text-align: right; display: flex; align-items: center; gap: 10px; }
+    .tx-amount { font-weight: 700; font-size: 0.98rem; white-space: nowrap; }
+    .tx-amount.income { color: var(--success); }
+    .tx-amount.expense { color: var(--danger); }
+
+    .del-btn {
+      border: none;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 5px 8px;
+      border-radius: 7px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .status-msg { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <h1 id="clubTitle">Business Club Finance Hub</h1>
+        <p id="syncStatus">লাইভ ফান্ড ও আয়-ব্যয়ের স্বচ্ছ হিসাব</p>
+      </div>
+
+      <div class="role-switch">
+        <button id="btnAdmin" class="role-btn" onclick="handleAdminClick()">Treasurer / Admin</button>
+        <button id="btnMember" class="role-btn active" onclick="setRole('member')">Member View</button>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">বর্তমান ব্যালেন্স (Current Balance)</div>
+        <div id="currentBalance" class="stat-value val-balance">৳0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">মোট আয় (Total Income)</div>
+        <div id="totalIncome" class="stat-value val-income">৳0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">মোট খরচ (Total Expense)</div>
+        <div id="totalExpense" class="stat-value val-expense">৳0</div>
+      </div>
+    </section>
+
+    <div class="main-grid">
+      <div class="card">
+        <div class="card-title">
+          <span>নতুন হিসাব যুক্ত করুন</span>
+        </div>
+
+        <div id="memberNotice" class="member-notice">
+          <strong>Member View সক্রিয়:</strong> আপনি ক্লাবের লাইভ হিসাব দেখতে ও CSV রিপোর্ট ডাউনলোড করতে পারছেন। হিসাব যোগ বা মুছতে ট্রেজারার পিন দিয়ে <strong>Treasurer / Admin</strong>-এ প্রবেশ করুন।
+        </div>
+
+        <form id="txForm" class="hidden" onsubmit="addTransaction(event)">
+          <div class="form-group">
+            <label for="type">ধরন (Type)</label>
+            <select id="type" required>
+              <option value="income">আয় / ফান্ড জমা (Income)</option>
+              <option value="expense">খরচ / ব্যয় (Expense)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="title">বিবরণ / খাত (Title)</label>
+            <input type="text" id="title" placeholder="যেমন: সেমিনার ব্যানার বা মেম্বার ফি" required />
+          </div>
+
+          <div class="form-group">
+            <label for="category">ক্যাটাগরি (Category)</label>
+            <select id="category">
+              <option value="Membership Fee">Membership Fee</option>
+              <option value="Event / Seminar">Event / Seminar</option>
+              <option value="Sponsorship">Sponsorship</option>
+              <option value="Printing & Logistics">Printing & Logistics</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="amount">পরিমাণ (BDT ৳)</label>
+            <input type="number" id="amount" min="1" step="any" placeholder="যেমন: 1500" required />
+          </div>
+
+          <div class="form-group">
+            <label for="date">তারিখ (Date)</label>
+            <input type="date" id="date" required />
+          </div>
+
+          <button type="submit" class="btn-primary">হিসাব সেভ করুন</button>
+          <div id="formStatus" class="status-msg"></div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>ট্রানজেকশন লগ (Live Updates)</span>
+          <button class="btn-outline" onclick="exportCSV()">CSV ডাউনলোড</button>
+        </div>
+
+        <div class="filters">
+          <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">সব (All)</button>
+          <button class="filter-chip" data-filter="income" onclick="setFilter('income', this)">আয় (Income)</button>
+          <button class="filter-chip" data-filter="expense" onclick="setFilter('expense', this)">খরচ (Expense)</button>
+        </div>
+
+        <div id="txList" class="tx-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_2bF3Yo0_qOSasAf8GpgBiA_rE2AxmAv';
+    const TREASURER_PIN = '1234';
+
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentRole = 'member';
+    let currentFilter = 'all';
+    let transactions = [];
+
+    function formatBDT(num) {
+      return '৳' + Number(num).toLocaleString('en-BD');
+    }
+
+    function handleAdminClick() {
+      if (currentRole === 'admin') return;
+      const enteredPin = prompt('Treasurer / Admin PIN দিন:');
+      if (enteredPin === TREASURER_PIN) {
+        setRole('admin');
+      } else if (enteredPin !== null) {
+        alert('ভুল PIN! আবার চেষ্টা করো।');
+      }
+    }
+
+    function setRole(role) {
+      currentRole = role;
+      document.getElementById('btnAdmin').classList.toggle('active', role === 'admin');
+      document.getElementById('btnMember').classList.toggle('active', role === 'member');
+      document.getElementById('txForm').classList.toggle('hidden', role !== 'admin');
+      document.getElementById('memberNotice').classList.toggle('hidden', role === 'admin');
+      renderList();
+    }
+
+    function setFilter(filter, el) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      renderList();
+    }
+
+    async function fetchTransactions() {
+      document.getElementById('syncStatus').textContent = 'ডাটা লোড হচ্ছে...';
+      const { data, error } = await db
+        .from('transactions')
+        .select('*')
+        .order('date', { ascending: false })
+        .order('id', { ascending: false });
+
+      if (error) {
+        document.getElementById('syncStatus').textContent = 'ডাটাবেজ কানেকশন চেক করুন';
+        console.error(error);
+        return;
+      }
+
+      transactions = data || [];
+      document.getElementById('syncStatus').textContent = 'লাইভ ডাটাবেজের সাথে যুক্ত';
+      render();
+    }
+
+    async function addTransaction(e) {
+      e.preventDefault();
+      if (currentRole !== 'admin') return;
+
+      const statusEl = document.getElementById('formStatus');
+      const payload = {
+        type: document.getElementById('type').value,
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        amount: parseFloat(document.getElementById('amount').value),
+        date: document.getElementById('date').value
+      };
+
+      if (!payload.title || isNaN(payload.amount) || payload.amount <= 0 || !payload.date) return;
+
+      statusEl.textContent = 'সেভ হচ্ছে...';
+      const { error } = await db.from('transactions').insert([payload]);
+
+      if (error) {
+        statusEl.textContent = 'সেভ করা যায়নি: ' + error.message;
+        return;
+      }
+
+      statusEl.textContent = 'সফলভাবে সেভ হয়েছে!';
+      e.target.reset();
+      document.getElementById('date').valueAsDate = new Date();
+      await fetchTransactions();
+    }
+
+    async function deleteTransaction(id) {
+      if (currentRole !== 'admin') return;
+      const { error } = await db.from('transactions').delete().eq('id', id);
+      if (!error) {
+        await fetchTransactions();
+      }
+    }
+
+    function renderSummary() {
+      const income = transactions
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+
+      const expense = transactions
+        .filter(t => t.type === 'expense')
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+
+      document.getElementById('totalIncome').textContent = formatBDT(income);
+      document.getElementById('totalExpense').textContent = formatBDT(expense);
+      document.getElementById('currentBalance').textContent = formatBDT(income - expense);
+    }
+
+    function renderList() {
+      const listEl = document.getElementById('txList');
+      const filtered = transactions.filter(t => currentFilter === 'all' || t.type === currentFilter);
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<p style="color: var(--muted); font-size: 0.9rem;">এখনো কোনো ট্রানজেকশন যুক্ত হয়নি।</p>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(item => `
+        <div class="tx-item">
+          <div class="tx-meta">
+            <h4>
+              ${escapeHTML(item.title)}
+              <span class="badge ${item.type === 'income' ? 'badge-income' : 'badge-expense'}">
+                ${item.type === 'income' ? 'Income' : 'Expense'}
+              </span>
+            </h4>
+            <p>${escapeHTML(item.category)} • ${item.date}</p>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount ${item.type}">
+              ${item.type === 'income' ? '+' : '-'}${formatBDT(item.amount)}
+            </span>
+            ${currentRole === 'admin' ? `<button class="del-btn" onclick="deleteTransaction(${item.id})">Delete</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function exportCSV() {
+      const headers = ['ID', 'Type', 'Title', 'Category', 'Amount_BDT', 'Date'];
+      const rows = transactions.map(t => [
+        t.id,
+        t.type,
+        `"${String(t.title).replace(/"/g, '""')}"`,
+        `"${String(t.category).replace(/"/g, '""')}"`,
+        t.amount,
+        t.date
+      ]);
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'club-finance-report.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function render() {
+      renderSummary();
+      renderList();
+    }
+
+    db.channel('transactions-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, () => {
+        fetchTransactions();
+      })
+      .subscribe();
+
+    document.getElementById('date').valueAsDate = new Date();
+    fetchTransactions();
+  </script>
+</body>
+</html>
