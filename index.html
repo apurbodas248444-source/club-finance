@@ -1,87 +1,257 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Club Finance Hub</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: #0b3da6; color: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .card { background: #e8edf7; padding: 15px; border-radius: 6px; text-align: center; }
-        .card h3 { margin: 0; font-size: 14px; color: #555; }
-        .card p { margin: 10px 0 0; font-size: 24px; font-weight: bold; color: #0b3da6; }
-        .form-section { margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background: #0b3da6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #082d7c; }
-        .filters { margin: 20px 0; display: flex; gap: 10px; }
-        .filter-btn { background: #ddd; color: #333; padding: 8px 15px; border-radius: 20px; cursor: pointer; border: none; }
-        .filter-btn.active { background: #0b3da6; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; }
-        .income { color: green; font-weight: bold; }
-        .expense { color: red; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Club Finance Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+    .header {
+      background: #0b3da6;
+      color: #ffffff;
+      padding: 18px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .role-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .role-badge {
+      background: rgba(255, 255, 255, 0.16);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .role-btn {
+      border: none;
+      background: #ffffff;
+      color: #0b3da6;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .card {
+      background: #e8edf7;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #374151;
+    }
+    .card p {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #0b3da6;
+    }
+    .form-section {
+      margin-top: 22px;
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    input, select {
+      padding: 9px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+    }
+    .btn-primary {
+      background: #0b3da6;
+      color: #ffffff;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-csv {
+      background: #16a34a;
+      color: #ffffff;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 22px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
+      color: #1f2937;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .filter-btn.active {
+      background: #0b3da6;
+      color: #ffffff;
+      border-color: #0b3da6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+    .status-income {
+      color: #15803d;
+      font-weight: 600;
+    }
+    .status-expense {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    .delete-btn {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    @media (max-width: 680px) {
+      .metrics { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
+  <div class="container">
     <div class="header">
-        <h1>Business Club Finance Hub</h1>
-        <div>
-            <button onclick="handleAdminClick()">Treasurer / Admin</button>
-            <button onclick="showMemberView()" id="memberViewBtn" style="display:none;">Member View</button>
-        </div>
+      <h1>Business Club Finance Hub</h1>
+      <div class="role-box">
+        <span id="roleDisplay" class="role-badge">Member / Viewer</span>
+        <button type="button" class="role-btn" onclick="switchRole()">রোল পরিবর্তন</button>
+      </div>
     </div>
 
     <div class="metrics">
-        <div class="card"><h3>বর্তমান ব্যালেন্স (Current Balance)</h3><p id="bal">৳0</p></div>
-        <div class="card"><h3>মোট আয় (Total Income)</h3><p id="income">৳0</p></div>
-        <div class="card"><h3>মোট খরচ (Total Expense)</h3><p id="expense">৳0</p></div>
+      <div class="card">
+        <h3>বর্তমান ব্যালেন্স (Current Balance)</h3>
+        <p id="currentBalance">৳0</p>
+      </div>
+      <div class="card">
+        <h3>মোট আয় (Total Income)</h3>
+        <p id="totalIncome">৳0</p>
+      </div>
+      <div class="card">
+        <h3>মোট খরচ (Total Expense)</h3>
+        <p id="totalExpense">৳0</p>
+      </div>
     </div>
 
-    <div class="form-section" id="adminForm" style="display:none;">
-        <h2>নতুন হিসাব যুক্ত করুন</h2>
-        <div class="form-group">
-            <label>ধরন (Type)</label>
-            <select id="type">
-                <option value="Income">আয় (Income)</option>
-                <option value="Expense">খরচ (Expense)</option>
-            </select>
-        </div>
-        <div class="form-group"><label>শিরোনাম (Title)</label><input type="text" id="title" placeholder="যেমন: চাঁদা বা অনুষ্ঠান"></div>
-        <div class="form-group"><label>ক্যাটাগরি (Category)</label><input type="text" id="category" placeholder="যেমন: Membership Fee"></div>
-        <div class="form-group"><label>পরিমাণ (BDT)</label><input type="number" id="amount" placeholder="১০০"></div>
-        <div class="form-group"><label>তারিখ (Date)</label><input type="date" id="date"></div>
-        <button onclick="saveTransaction()">হিসাব সেভ করুন</button>
+    <div id="adminFormSection" class="form-section" style="display: none;">
+      <strong>নতুন লেনদেন যোগ করুন (শুধুমাত্র অ্যাডমিন)</strong>
+      <div class="form-grid">
+        <input type="date" id="txDate" />
+        <input type="text" id="txTitle" placeholder="শিরোনাম" />
+        <input type="text" id="txCategory" placeholder="ক্যাটাগরি" />
+        <select id="txType">
+          <option value="income">আয় (Income)</option>
+          <option value="expense">খরচ (Expense)</option>
+        </select>
+        <input type="number" id="txAmount" placeholder="পরিমাণ (৳)" min="0" step="any" />
+        <button type="button" class="btn-primary" onclick="saveTransaction()">সেভ করুন</button>
+      </div>
     </div>
 
-    <div class="filters">
-        <button class="filter-btn active" onclick="setFilter('all', this)">সব (All)</button>
-        <button class="filter-btn" onclick="setFilter('Income', this)">আয় (Income)</button>
-        <button class="filter-btn" onclick="setFilter('Expense', this)">খরচ (Expense)</button>
-        <button onclick="exportCSV()" style="margin-left:auto; background:#28a745;">CSV ডাউনলোড</button>
+    <div class="toolbar">
+      <div class="filters">
+        <button type="button" id="btn-all" class="filter-btn active" onclick="setFilter('all')">সব (All)</button>
+        <button type="button" id="btn-income" class="filter-btn" onclick="setFilter('income')">আয় (Income)</button>
+        <button type="button" id="btn-expense" class="filter-btn" onclick="setFilter('expense')">খরচ (Expense)</button>
+      </div>
+      <button type="button" class="btn-csv" onclick="exportCSV()">CSV ডাউনলোড</button>
     </div>
 
     <table>
-        <thead>
-            <tr><th>তারিখ</th><th>শিরোনাম</th><th>ক্যাটাগরি</th><th>ধরন</th><th>পরিমাণ</th><th>Action</th></tr>
-        </thead>
-        <tbody id="tx-list"></tbody>
+      <thead>
+        <tr>
+          <th>তারিখ</th>
+          <th>শিরোনাম</th>
+          <th>ক্যাটাগরি</th>
+          <th>ধরন</th>
+          <th>পরিমাণ</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="txTableBody"></tbody>
     </table>
-</div>
+  </div>
 
-<script>
-    const SUPABASE_URL = 'https://ppcsjjkpzexqyymctlrx.supabase.co';
+  <script>
+    const SUPABASE_URL = ''https://ppcsjjkpzexqyymctlrx.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_2bF3Yo0_qOSasAf8GpgBiA_rE2AxmAv';
-    const MEMBER_PIN = '5678';
-    const TREASURER_PIN = '420';
+    const ADMIN_PIN = '420'; // প্রয়োজনে নিজের অ্যাডমিন পিন দিন
 
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -89,160 +259,188 @@
     let currentFilter = 'all';
     let transactions = [];
 
-    window.onload = function() {
-        document.getElementById('date').value = new Date().toISOString().split('T')[0];
-        checkAccess();
-    };
-
-    function checkAccess() {
-        const enteredPin = prompt("প্লিজ পিন দিন (মেম্বার: 5678, ট্রেজারার: 1234):");
-        if (enteredPin === TREASURER_PIN) {
-            currentRole = 'admin';
-            document.getElementById('adminForm').style.display = 'block';
-            document.getElementById('memberViewBtn').style.display = 'inline-block';
-        } else if (enteredPin === MEMBER_PIN) {
-            currentRole = 'member';
-            alert("সফলভাবে মেম্বার ভিউতে প্রবেশ করেছেন।");
-        } else {
-            document.body.innerHTML = "<h1>অ্যাক্সেস সংরক্ষিত। সঠিক পিন ছাড়া এই পেজ দেখা নিষেধ।</h1>";
-            return;
-        }
-        fetchTransactions();
+    function formatBDT(amount) {
+      const num = Number(amount) || 0;
+      return '৳' + num.toLocaleString('en-BD');
     }
 
-    function showMemberView() {
+    function updateRoleUI() {
+      const badge = document.getElementById('roleDisplay');
+      const formSection = document.getElementById('adminFormSection');
+
+      if (currentRole === 'admin') {
+        badge.textContent = 'Treasurer / Admin';
+        formSection.style.display = 'block';
+      } else {
+        badge.textContent = 'Member / Viewer';
+        formSection.style.display = 'none';
+      }
+      renderList();
+    }
+
+    function switchRole() {
+      if (currentRole === 'admin') {
         currentRole = 'member';
-        document.getElementById('adminForm').style.display = 'none';
-        document.getElementById('memberViewBtn').style.display = 'none';
+        updateRoleUI();
+        return;
+      }
+
+      const pin = prompt('অ্যাডমিন পিন লিখুন:');
+      if (pin === ADMIN_PIN) {
+        currentRole = 'admin';
+        updateRoleUI();
+      } else if (pin !== null) {
+        alert('ভুল পিন! মেম্বার মোড বহাল থাকছে।');
+      }
     }
 
-    function handleAdminClick() {
-        if (currentRole === 'admin') return;
-        const enteredPin = prompt("Treasurer / Admin PIN দিন:");
-        if (enteredPin === TREASURER_PIN) {
-            currentRole = 'admin';
-            document.getElementById('adminForm').style.display = 'block';
-            document.getElementById('memberViewBtn').style.display = 'inline-block';
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-btn').forEach((btn) => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-' + filterType);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderList();
+    }
+
+    function updateSummary() {
+      let income = 0;
+      let expense = 0;
+
+      transactions.forEach((t) => {
+        const amt = Number(t.amount) || 0;
+        if ((t.type || '').toLowerCase() === 'income') {
+          income += amt;
         } else {
-            alert("ভুল ট্রেজারার পিন!");
+          expense += amt;
         }
-    }
+      });
 
-    function formatBDT(num) {
-        return '৳' + Number(num).toLocaleString('en-BD');
-    }
-
-    async function fetchTransactions() {
-        const { data, error } = await db.from('transactions').select('*').order('date', { ascending: false });
-        if (error) {
-            alert("ডাটা আনতে সমস্যা হয়েছে: " + error.message);
-            return;
-        }
-        transactions = data;
-        updateDashboard();
-    }
-
-    function updateDashboard() {
-        let totalIncome = 0;
-        let totalExpense = 0;
-
-        transactions.forEach(t => {
-            if (t.type === 'Income') totalIncome += Number(t.amount);
-            if (t.type === 'Expense') totalExpense += Number(t.amount);
-        });
-
-        document.getElementById('bal').innerText = formatBDT(totalIncome - totalExpense);
-        document.getElementById('income').innerText = formatBDT(totalIncome);
-        document.getElementById('expense').innerText = formatBDT(totalExpense);
-
-        renderList();
-    }
-
-    function setFilter(filter, btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
-        currentFilter = filter;
-        renderList();
+      const balance = income - expense;
+      document.getElementById('currentBalance').textContent = formatBDT(balance);
+      document.getElementById('totalIncome').textContent = formatBDT(income);
+      document.getElementById('totalExpense').textContent = formatBDT(expense);
     }
 
     function renderList() {
-        const tbody = document.getElementById('tx-list');
-        tbody.innerHTML = '';
+      const tbody = document.getElementById('txTableBody');
+      tbody.innerHTML = '';
 
-        const filtered = transactions.filter(t => {
-            if (currentFilter === 'all') return true;
-            return t.type === currentFilter;
-        });
+      const filtered = transactions.filter((t) => {
+        if (currentFilter === 'all') return true;
+        return (t.type || '').toLowerCase() === currentFilter;
+      });
 
-        filtered.forEach(t => {
-            const row = `<tr>
-                <td>${t.date}</td>
-                <td>${t.title}</td>
-                <td>${t.category}</td>
-                <td><span class="${t.type.toLowerCase()}">${t.type === 'Income' ? 'আয়' : 'খরচ'}</span></td>
-                <td>${formatBDT(t.amount)}</td>
-                ${currentRole === 'admin' ? <td><button onclick="deleteTransaction('${t.id}')">Delete</button></td> : '<td></td>'}
-            </tr>`;
-            tbody.innerHTML += row;
-        });
+      filtered.forEach((t) => {
+        const typeLower = (t.type || '').toLowerCase();
+        const typeLabel = typeLower === 'income' ? 'আয়' : 'খরচ';
+        const deleteCell =
+          currentRole === 'admin'
+            ? `<td><button type="button" class="delete-btn" onclick="deleteTransaction('${t.id}')">Delete</button></td>`
+            : '<td></td>';
+
+        const row = `
+          <tr>
+            <td>${t.date || ''}</td>
+            <td>${t.title || ''}</td>
+            <td>${t.category || ''}</td>
+            <td><span class="status-${typeLower}">${typeLabel}</span></td>
+            <td>${formatBDT(t.amount)}</td>
+            ${deleteCell}
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    async function fetchTransactions() {
+      const { data, error } = await db
+        .from('transactions')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) {
+        console.error('ডাটা লোড করতে সমস্যা:', error.message);
+        return;
+      }
+
+      transactions = data || [];
+      updateSummary();
+      renderList();
     }
 
     async function saveTransaction() {
-        if (currentRole !== 'admin') {
-            alert("দুঃখিত, শুধুমাত্র ট্রেজারার হিসাব যোগ করতে পারবেন!");
-            return;
-        }
-        const type = document.getElementById('type').value;
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const amount = document.getElementById('amount').value;
-        const date = document.getElementById('date').value;
+      if (currentRole !== 'admin') {
+        alert('দুঃখিত, শুধুমাত্র অ্যাডমিন এন্ট্রি যোগ করতে পারবেন।');
+        return;
+      }
 
-        if (!title || !amount || !date) {
-            alert("দয়া করে সব তথ্য পূরণ করুন!");
-            return;
-        }
+      const date = document.getElementById('txDate').value;
+      const title = document.getElementById('txTitle').value.trim();
+      const category = document.getElementById('txCategory').value.trim();
+      const type = document.getElementById('txType').value;
+      const amount = Number(document.getElementById('txAmount').value);
 
-        const { error } = await db.from('transactions').insert([{ type, title, category, amount, date }]);
+      if (!date || !title || !amount) {
+        alert('তারিখ, শিরোনাম এবং পরিমাণ সঠিকভাবে পূরণ করুন।');
+        return;
+      }
 
-        if (error) {
-            alert("সেভ করতে সমস্যা: " + error.message);
-        } else {
-            alert("সফলভাবে সেভ হয়েছে!");
-            document.getElementById('title').value = '';
-            document.getElementById('amount').value = '';
-            fetchTransactions();
-        }
+      const { error } = await db.from('transactions').insert([{ date, title, category, type, amount }]);
+
+      if (error) {
+        alert('সেভ করতে সমস্যা হয়েছে: ' + error.message);
+      } else {
+        document.getElementById('txTitle').value = '';
+        document.getElementById('txCategory').value = '';
+        document.getElementById('txAmount').value = '';
+        fetchTransactions();
+      }
     }
 
-    function exportCSV() {
-        let csv = 'তারিখ,শিরোনাম,ক্যাটাগরি,ধরন,পরিমাণ\n';
-        transactions.forEach(t => {
-            csv += `${t.date},${t.title},${t.category},${t.type},${t.amount}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'finance_report.csv';
-        a.click();
-    }async function deleteTransaction(id) {
-    if (!confirm('আপনি কি এই এন্ট্রিটি ডিলিট করতে চান?')) return;
+    async function deleteTransaction(id) {
+      if (currentRole !== 'admin') {
+        alert('দুঃখিত, শুধুমাত্র অ্যাডমিন ডিলিট করতে পারবেন।');
+        return;
+      }
 
-    const { error } = await db
+      if (!confirm('আপনি কি এই এন্ট্রিটি ডিলিট করতে চান?')) {
+        return;
+      }
+
+      const { error } = await db
         .from('transactions')
         .delete()
         .eq('id', id);
 
-    if (error) {
+      if (error) {
         alert('ডিলিট করতে সমস্যা হয়েছে: ' + error.message);
-    } else if (typeof fetchTransactions === 'function') {
+      } else if (typeof fetchTransactions === 'function') {
         fetchTransactions();
-    } else {
+      } else {
         location.reload();
+      }
     }
-}
-</script>
 
+    function exportCSV() {
+      let csv = 'তারিখ,শিরোনাম,ক্যাটাগরি,ধরন,পরিমাণ\n';
+      transactions.forEach((t) => {
+        csv += `${t.date || ''},${t.title || ''},${t.category || ''},${t.type || ''},${t.amount || 0}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'finance_report.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('txDate').valueAsDate = new Date();
+      updateRoleUI();
+      fetchTransactions();
+    });
+  </script>
 </body>
 </html>
